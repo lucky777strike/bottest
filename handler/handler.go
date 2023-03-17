@@ -2,10 +2,7 @@ package handler
 
 import (
 	"context"
-	"fmt"
-	"log"
 
-	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/lucky777strike/bottest/domain"
 	"github.com/lucky777strike/tgmux"
 )
@@ -28,22 +25,13 @@ func (h *Handler) Start() error {
 	if err != nil {
 		return err
 	}
-	bot.HandleCmd("/sum", startCommand)
-	bot.HandleState("sum", startCommand)
+	bot.HandleCmd("/start", h.startCommand)
+	bot.HandleState("/start", h.startCommand)
+
+	bot.HandleCmd("/stat", h.stat)
+	bot.HandleCmd("/reset", h.reset)
 	go func() {
 		bot.Start()
 	}()
 	return nil
-}
-
-func startCommand(c *tgmux.Ctx) {
-	welcomeMessage := fmt.Sprintf("Hello, %s! Welcome to the example bot.", c.Msg.From.FirstName)
-
-	reply := tgbotapi.NewMessage(c.Msg.Chat.ID, welcomeMessage)
-	reply.ReplyToMessageID = c.Msg.MessageID
-
-	_, err := c.Bot.Send(reply)
-	if err != nil {
-		log.Printf("Error sending message: %v\n", err)
-	}
 }

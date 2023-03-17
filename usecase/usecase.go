@@ -4,15 +4,11 @@ import (
 	"github.com/lucky777strike/bottest/domain"
 )
 
-type CompositeUsecase struct {
-	StatUcase domain.StatisticsUsecase
+type Service struct {
+	domain.StatisticsUsecase
 }
 
-func NewUsecase(Repo domain.Repository) domain.Usecase {
-	return &CompositeUsecase{
-		StatUcase: newStatisticsUsecase(Repo.GetStatRepo())}
-}
-
-func (r *CompositeUsecase) GetStatUcase() domain.StatisticsUsecase {
-	return r.StatUcase
+func NewService(statRepo domain.StatisticsRepository) domain.Usecase {
+	return &Service{
+		StatisticsUsecase: newStatisticsUsecase(statRepo)}
 }

@@ -4,12 +4,26 @@ import (
 	"context"
 	"time"
 
+	"database/sql"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/lucky777strike/bottest/domain"
 )
 
+type statisticsPostgres struct {
+	db *sqlx.DB
+}
+
 func NewStatisticsPostgresRepository(db *sqlx.DB) domain.StatisticsRepository {
 	return &statisticsPostgres{db}
+}
+func (s *statisticsPostgres) SetUserStatistics(ctx context.Context, userStats domain.UserStatistics) error {
+	query := `
+		INSERT INTO user_statistics (user_id, first_request_time, total_requests, last_request_time)
+		VALUES ($1, $2, $3, $4)
+	`
+	_, err := s.db.ExecContext(ctx, query, userStats.UserID, userStats.FirstRequestTime, userStats.TotalRequests, userStats.LastRequestTime)
+	return err
 }
 
 func (s *statisticsPostgres) GetUserStatistics(ctx context.Context, userID int64) (*domain.UserStatistics, error) {
@@ -18,23 +32,19 @@ func (s *statisticsPostgres) GetUserStatistics(ctx context.Context, userID int64
 
 	err := s.db.GetContext(ctx, userStats, query, userID)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, domain.ErrUserNotFound
+		}
 		return nil, err
 	}
 
 	return userStats, nil
 }
 
-func (s *statisticsPostgres) UpdateUserStatistics(ctx context.Context, userID int64, stats *domain.UserStatistics) error {
+func (s *statisticsPostgres) UpdateUserStatistics(ctx context.Context, stats domain.UserStatistics) error {
 	query := `UPDATE user_statistics SET first_request_time = $1, total_requests = $2, last_request_time = $3 WHERE user_id = $4`
 
-	_, err := s.db.ExecContext(ctx, query, stats.FirstRequestTime, stats.TotalRequests, stats.LastRequestTime, userID)
-	return err
-}
-
-func (s *statisticsPostgres) ResetUserStatistics(ctx context.Context, userID int64) error {
-	query := `UPDATE user_statistics SET first_request_time = NULL, total_requests = 0, last_request_time = NULL WHERE user_id = $1`
-
-	_, err := s.db.ExecContext(ctx, query, userID)
+	_, err := s.db.ExecContext(ctx, query, stats.FirstRequestTime, stats.TotalRequests, stats.LastRequestTime, stats.UserID)
 	return err
 }
 

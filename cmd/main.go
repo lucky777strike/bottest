@@ -22,8 +22,8 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
-	rep := repository.NewRepository(db)
-	ucase := usecase.NewUsecase(rep)
+	StatRep := repository.NewStatisticsPostgresRepository(db)
+	ucase := usecase.NewService(StatRep)
 	ctx, cancel := context.WithCancel(context.Background())
 	token := "5990324330:AAEZdIaNzVTSQIlZJnU9zwj1QhfnPSDXr5g"
 	handler := handler.NewHandler(ctx, cancel, ucase, token)
