@@ -6,9 +6,11 @@ import (
 
 type Service struct {
 	domain.StatisticsUsecase
+	domain.WeatherUsecase
 }
 
-func NewService(statRepo domain.StatisticsRepository) domain.Usecase {
+func NewService(statRepo domain.StatisticsRepository, weatherRepo domain.WeatherRepository) domain.Usecase {
 	return &Service{
-		StatisticsUsecase: newStatisticsUsecase(statRepo)}
+		StatisticsUsecase: newStatisticsUsecase(statRepo),
+		WeatherUsecase:    newWeatherUsecase(weatherRepo)}
 }

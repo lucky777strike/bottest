@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/lucky777strike/tgmux"
@@ -18,7 +17,7 @@ func (h *Handler) startCommand(c *tgmux.Ctx) {
 
 	_, err := c.Bot.Send(reply)
 	if err != nil {
-		log.Printf("Error sending message: %v\n", err)
+		h.logger.Errorf("Error sending message: %v\n", err)
 	}
 }
 
@@ -38,7 +37,7 @@ func (h *Handler) stat(c *tgmux.Ctx) {
 
 	_, err = c.Bot.Send(reply)
 	if err != nil {
-		log.Printf("Error sending message: %v\n", err)
+		h.logger.Errorf("Error sending message: %v\n", err)
 	}
 }
 
@@ -59,6 +58,6 @@ func (h *Handler) reset(c *tgmux.Ctx) {
 
 	_, err = c.Bot.Send(reply)
 	if err != nil {
-		log.Printf("Error sending message: %v\n", err)
+		h.logger.Errorf("Error sending message: %v\n", err)
 	}
 }
