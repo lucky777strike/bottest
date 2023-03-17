@@ -1,9 +1,10 @@
 package main
 
 import (
+	"context"
 	"log"
-	"os"
 
+	"github.com/lucky777strike/bottest/handler"
 	"github.com/lucky777strike/bottest/repository"
 	"github.com/lucky777strike/bottest/usecase"
 )
@@ -11,16 +12,23 @@ import (
 func main() {
 
 	db, err := repository.NewPostgresDB(repository.Config{
-		Host:     "db",
+		Host:     "127.0.0.1",
 		Port:     "5432",
 		Username: "postgres",
 		DBName:   "postgres",
 		SSLMode:  "disable",
-		Password: os.Getenv("DB_PASSWORD"),
+		Password: "12345678",
 	})
 	if err != nil {
-		log.Panicln()
+		log.Panicln(err)
 	}
 	rep := repository.NewRepository(db)
 	ucase := usecase.NewUsecase(rep)
+	ctx, cancel := context.WithCancel(context.Background())
+	token := "5990324330:AAEZdIaNzVTSQIlZJnU9zwj1QhfnPSDXr5g"
+	handler := handler.NewHandler(ctx, cancel, ucase, token)
+	handler.Start()
+
+	for {
+	}
 }

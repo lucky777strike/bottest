@@ -12,14 +12,28 @@ import (
 
 type Handler struct {
 	ctx     context.Context
+	cancel  context.CancelFunc
 	token   string
 	usecase domain.Usecase
 }
 
-func NewHandler(ctx context.Context, usecase domain.Usecase, token string) *Handler {
+func NewHandler(ctx context.Context, cancel context.CancelFunc, usecase domain.Usecase, token string) *Handler {
 	return &Handler{ctx: ctx,
 		usecase: usecase,
 		token:   token}
+}
+
+func (h *Handler) Start() error {
+	bot, err := tgmux.NewHandlerWithContext(h.ctx, h.cancel, h.token)
+	if err != nil {
+		return err
+	}
+	bot.HandleCmd("/sum", startCommand)
+	bot.HandleState("sum", startCommand)
+	go func() {
+		bot.Start()
+	}()
+	return nil
 }
 
 func startCommand(c *tgmux.Ctx) {
