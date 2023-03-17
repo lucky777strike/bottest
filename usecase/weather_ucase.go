@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 	"errors"
-	"log"
 	"time"
 
 	"github.com/lucky777strike/bottest/domain"
@@ -23,7 +22,6 @@ func (w *WeatherService) GetWeather(ctx context.Context, city string) (domain.We
 	var res domain.Weather
 	res, err := w.repo.GetWeather(ctx, city)
 	if err != nil {
-		log.Println(err)
 		if errors.Is(err, domain.ErrNoWeatherInBase) { //Если город нет в базе
 			res, err = w.ParseWeather(ctx, city)
 			if err != nil {

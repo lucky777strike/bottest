@@ -24,7 +24,7 @@ func (h *Handler) GetWeather(c *tgmux.Ctx) {
 			sb.WriteString("\n")
 		}
 
-		message := fmt.Sprintf("Привет %s.  Выбери город,\n %s ", c.Msg.From.FirstName, sb.String())
+		message := fmt.Sprintf("Привет %s.  Выбери город,\n%s ", c.Msg.From.FirstName, sb.String())
 		reply := tgbotapi.NewMessage(c.Msg.Chat.ID, message)
 		reply.ReplyToMessageID = c.Msg.MessageID
 		_, err := c.Bot.Send(reply)

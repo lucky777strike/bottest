@@ -9,8 +9,10 @@ import (
 
 func (h *Handler) startCommand(c *tgmux.Ctx) {
 	h.usecase.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
-	welcomeMessage := fmt.Sprintf("Hello, %s! Welcome to the example bot.", c.Msg.From.FirstName)
-	fmt.Println(h.usecase.GetUserStatistics(h.ctx, c.Msg.From.ID))
+	welcomeMessage := fmt.Sprintf(`Привет, %s! Доступные команды:
+	/weather -- прогноз погоды
+	/stat -- статистика запросов
+	/reset -- сброс статистики`, c.Msg.From.FirstName)
 
 	reply := tgbotapi.NewMessage(c.Msg.Chat.ID, welcomeMessage)
 	reply.ReplyToMessageID = c.Msg.MessageID

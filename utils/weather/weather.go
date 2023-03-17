@@ -30,7 +30,7 @@ func New() *WeatherService {
 	// cities["Астрахань"] = "/pogoda/russia/astrakhan/"
 	cities["Санкт-Петербург"] = "/weather/overview/sankt-peterburg/"
 	cities["Москва"] = "/weather/overview/moskva"
-	cities["yakutsk"] = "/weather/overview/yakutsk"
+	cities["Якутск"] = "/weather/overview/yakutsk"
 	client := &http.Client{}
 	return &WeatherService{client: client, paths: cities}
 }
