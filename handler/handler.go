@@ -10,16 +10,14 @@ import (
 
 type Handler struct {
 	ctx     context.Context
-	cancel  context.CancelFunc
 	token   string
 	usecase domain.Service
 	logger  *logrus.Logger
 }
 
-func NewHandler(ctx context.Context, cancel context.CancelFunc, logger *logrus.Logger, usecase *domain.Service, token string) *Handler {
+func NewHandler(ctx context.Context, logger *logrus.Logger, usecase *domain.Service, token string) *Handler {
 	return &Handler{
 		ctx:     ctx,
-		cancel:  cancel,
 		token:   token,
 		usecase: *usecase,
 		logger:  logger,
@@ -27,7 +25,7 @@ func NewHandler(ctx context.Context, cancel context.CancelFunc, logger *logrus.L
 }
 
 func (h *Handler) Start() error {
-	bot, err := tgmux.NewHandlerWithContext(h.ctx, h.cancel, h.token)
+	bot, err := tgmux.NewHandlerWithContext(h.ctx, h.token)
 	bot.SetLogger(h.logger)
 	if err != nil {
 		return err

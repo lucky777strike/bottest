@@ -2,8 +2,6 @@ package main
 
 import (
 	"context"
-	"io"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -15,7 +13,7 @@ import (
 )
 
 func main() {
-
+	logger := logrus.New()
 	db, err := repository.NewPostgresDB(repository.Config{
 		Host:     "127.0.0.1",
 		Port:     "5432",
@@ -25,14 +23,13 @@ func main() {
 		Password: "12345678",
 	})
 	if err != nil {
-		log.Panicln(err)
+		logger.Panicln(err)
 	}
 	repo := repository.NewRepository(db)
 	ucase := usecase.NewService(repo)
 	ctx, cancel := context.WithCancel(context.Background())
 	token := "5990324330:AAEZdIaNzVTSQIlZJnU9zwj1QhfnPSDXr5g"
-	logger := logrus.New()
-	handler := handler.NewHandler(ctx, cancel, logger, ucase, token)
+	handler := handler.NewHandler(ctx, logger, ucase, token)
 	handler.Start()
 
 	signalChan := make(chan os.Signal, 1)
@@ -42,22 +39,4 @@ func main() {
 
 	logger.Info("Shutting down...")
 	cancel()
-}
-
-func createLogger() *logrus.Logger {
-	logger := logrus.New()
-	logger.SetFormatter(&logrus.TextFormatter{
-		FullTimestamp: true,
-	})
-
-	logger.SetLevel(logrus.InfoLevel)
-
-	file, err := os.OpenFile("logrus.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
-	if err == nil {
-		logger.SetOutput(io.MultiWriter(os.Stdout, file))
-	} else {
-		logger.Info("Failed to log to file, using default stderr")
-	}
-
-	return logger
 }

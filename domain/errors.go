@@ -8,3 +8,4 @@ var ErrUserNotFound = errors.New("user not found")
 // weather
 var ErrCityNotFound = errors.New("city not found")
 var ErrNoWeatherInBase = errors.New("database not contain this city")
+var ErrNoCurrencyInBase = errors.New("database not contain this currency")

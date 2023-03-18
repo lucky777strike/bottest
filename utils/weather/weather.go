@@ -23,46 +23,12 @@ type WeatherRes struct {
 
 func New() *WeatherService {
 	cities := make(map[string]string)
-	// cities["Санкт-Петербург"] = "/pogoda/russia/saint_petersburg/"
-	// cities["Адлер"] = "/pogoda/russia/adler/"
-	// cities["Анапа"] = "/pogoda/russia/anapa/"
-	// cities["Архангельск"] = "/pogoda/russia/arkhangelsk/"
-	// cities["Астрахань"] = "/pogoda/russia/astrakhan/"
 	cities["Санкт-Петербург"] = "/weather/overview/sankt-peterburg/"
 	cities["Москва"] = "/weather/overview/moskva"
 	cities["Якутск"] = "/weather/overview/yakutsk"
 	client := &http.Client{}
 	return &WeatherService{client: client, paths: cities}
 }
-
-// func (w *WeatherService) GetWeather(ctx context.Context, city string) (string, string, error) { //TODO ERROR HANDLING
-// 	if p, ok := w.paths[city]; ok {
-// 		req, err := http.NewRequestWithContext(ctx, http.MethodGet, "https://world-weather.ru"+p, nil)
-// 		req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36")
-// 		if err != nil {
-// 			return "", "", err
-// 		}
-// 		resp, err := w.client.Do(req)
-// 		if err != nil {
-// 			return "", "", err
-// 		}
-// 		defer resp.Body.Close()
-
-// 		body, err := ioutil.ReadAll(resp.Body)
-// 		if err != nil {
-// 			return "", "", err
-// 		}
-// 		doc := soup.HTMLParse(string(body))
-// 		number := doc.Find("div", "id", "weather-now-number").Text()
-// 		weather := "неизвестно"
-// 		if w, ok := doc.Find("span", "id", "weather-now-icon").Attrs()["title"]; ok {
-// 			weather = w
-// 		}
-
-// 		return number, weather, nil
-// 	}
-// 	return "", "", ErrCityNotFound
-// }
 
 func (w *WeatherService) GetWeather(ctx context.Context, city string) (WeatherRes, error) { //TODO ERROR HANDLING
 	res := WeatherRes{}
