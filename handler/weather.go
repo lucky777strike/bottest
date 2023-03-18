@@ -11,12 +11,12 @@ import (
 )
 
 func (h *Handler) GetWeather(c *tgmux.Ctx) {
-	h.usecase.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
+	h.usecase.Stat.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
 	currentFunction := c.State.GetCurrentFunction()
 	if currentFunction == "" {
 		c.State.SetCurrentFunction("weather")
 
-		cities := h.usecase.AviableCities()
+		cities := h.usecase.Weather.AviableCities()
 
 		var sb strings.Builder
 		for _, element := range cities {
@@ -33,7 +33,7 @@ func (h *Handler) GetWeather(c *tgmux.Ctx) {
 		}
 	}
 	if currentFunction == "weather" {
-		w, err := h.usecase.GetWeather(h.ctx, c.Msg.Text)
+		w, err := h.usecase.Weather.GetWeather(h.ctx, c.Msg.Text)
 		if err != nil {
 			if errors.Is(err, domain.ErrCityNotFound) {
 				message := fmt.Sprintf("Прости %s, но я не знаю города %s \n Попробуй еще раз", c.Msg.From.FirstName, c.Msg.Text)

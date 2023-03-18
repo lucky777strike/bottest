@@ -12,16 +12,16 @@ type Handler struct {
 	ctx     context.Context
 	cancel  context.CancelFunc
 	token   string
-	usecase domain.Usecase
+	usecase domain.Service
 	logger  *logrus.Logger
 }
 
-func NewHandler(ctx context.Context, cancel context.CancelFunc, logger *logrus.Logger, usecase domain.Usecase, token string) *Handler {
+func NewHandler(ctx context.Context, cancel context.CancelFunc, logger *logrus.Logger, usecase *domain.Service, token string) *Handler {
 	return &Handler{
 		ctx:     ctx,
 		cancel:  cancel,
 		token:   token,
-		usecase: usecase,
+		usecase: *usecase,
 		logger:  logger,
 	}
 }

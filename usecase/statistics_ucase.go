@@ -58,6 +58,7 @@ func (s *StatisticsService) IncrementUserStatistics(ctx context.Context, userID 
 				UserID:           userID,
 				FirstRequestTime: time.Now(),
 				LastRequestTime:  time.Now(),
+				TotalRequests:    1,
 			}
 			err = s.statsRepo.SetUserStatistics(ctx, *newUserStats)
 			if err != nil {

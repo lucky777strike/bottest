@@ -8,7 +8,7 @@ import (
 )
 
 func (h *Handler) startCommand(c *tgmux.Ctx) {
-	h.usecase.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
+	h.usecase.Stat.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
 	welcomeMessage := fmt.Sprintf(`Привет, %s! Доступные команды:
 	/weather -- прогноз погоды
 	/stat -- статистика запросов
@@ -24,8 +24,8 @@ func (h *Handler) startCommand(c *tgmux.Ctx) {
 }
 
 func (h *Handler) stat(c *tgmux.Ctx) {
-	h.usecase.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
-	stat, err := h.usecase.GetUserStatistics(h.ctx, c.Msg.From.ID)
+	h.usecase.Stat.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
+	stat, err := h.usecase.Stat.GetUserStatistics(h.ctx, c.Msg.From.ID)
 	if err != nil {
 		c.SendErrorMessage(err)
 		return
@@ -44,8 +44,8 @@ func (h *Handler) stat(c *tgmux.Ctx) {
 }
 
 func (h *Handler) reset(c *tgmux.Ctx) {
-	h.usecase.ResetUserStatistics(h.ctx, c.Msg.From.ID)
-	stat, err := h.usecase.GetUserStatistics(h.ctx, c.Msg.From.ID)
+	h.usecase.Stat.ResetUserStatistics(h.ctx, c.Msg.From.ID)
+	stat, err := h.usecase.Stat.GetUserStatistics(h.ctx, c.Msg.From.ID)
 
 	if err != nil {
 		c.SendErrorMessage(err)

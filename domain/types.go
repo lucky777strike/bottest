@@ -1,6 +1,6 @@
 package domain
 
-type Usecase interface {
-	StatisticsUsecase
-	WeatherUsecase
+type Service struct {
+	Stat    StatisticsUsecase
+	Weather WeatherUsecase
 }

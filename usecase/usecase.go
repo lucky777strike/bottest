@@ -4,13 +4,8 @@ import (
 	"github.com/lucky777strike/bottest/domain"
 )
 
-type Service struct {
-	domain.StatisticsUsecase
-	domain.WeatherUsecase
-}
-
-func NewService(statRepo domain.StatisticsRepository, weatherRepo domain.WeatherRepository) domain.Usecase {
-	return &Service{
-		StatisticsUsecase: newStatisticsUsecase(statRepo),
-		WeatherUsecase:    newWeatherUsecase(weatherRepo)}
+func NewService(statRepo domain.StatisticsRepository, weatherRepo domain.WeatherRepository) *domain.Service {
+	return &domain.Service{
+		Stat:    newStatisticsUsecase(statRepo),
+		Weather: newWeatherUsecase(weatherRepo)}
 }

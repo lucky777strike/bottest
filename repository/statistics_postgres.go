@@ -51,6 +51,19 @@ func (s *statisticsPostgres) UpdateUserStatistics(ctx context.Context, stats dom
 func (s *statisticsPostgres) IncrementUserStatistics(ctx context.Context, userID int64) error {
 	query := `UPDATE user_statistics SET total_requests = total_requests + 1, last_request_time = $1 WHERE user_id = $2`
 
-	_, err := s.db.ExecContext(ctx, query, time.Now(), userID)
+	res, err := s.db.ExecContext(ctx, query, time.Now(), userID)
+	a, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if a == 0 {
+		return domain.ErrUserNotFound
+	}
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return domain.ErrUserNotFound
+		}
+		return err
+	}
 	return err
 }
