@@ -7,5 +7,6 @@ import (
 
 func NewRepository(db *sqlx.DB) *domain.Repository {
 	return &domain.Repository{Stat: NewStatisticsPostgresRepository(db),
-		Weather: NewWeatherPostgresRepository(db)}
+		Weather:  NewWeatherPostgresRepository(db),
+		Currency: NewCurrencyPostgresRepository(db)}
 }

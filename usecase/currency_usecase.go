@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/lucky777strike/bottest/domain"
 	"github.com/lucky777strike/bottest/utils/currency"
@@ -17,61 +18,42 @@ func NewCurrencyUsecase(repo domain.CurrencyRepository) domain.CurrencyUsecase {
 	return &CurrencyService{tool: currency.New(), repo: repo}
 }
 
-func (c *CurrencyService) GetCurrency(ctx context.Context, name string) (*domain.Currency, error) {
+func (c *CurrencyService) GetCurrency(ctx context.Context, name string) (domain.Currency, error) {
 	cur, err := c.repo.GetCurrency(ctx, name)
 	if err != nil {
 		if errors.Is(err, domain.ErrNoCurrencyInBase) {
 			cur, err = c.UpdateCurrencyFromAPI(ctx, name)
 			if err != nil {
-				return nil, err
+				return domain.Currency{}, err
 			}
 		} else {
-			return nil, err
+			return domain.Currency{}, err
+		}
+	}
+	if time.Since(cur.LastUpd) > 1*time.Hour { //Если с последнего апдейта в базе прошло больше 1х часов парсим заново
+		cur, err = c.UpdateCurrencyFromAPI(ctx, name)
+		if err != nil {
+			return domain.Currency{}, domain.ErrNoCurrencyInBase
 		}
 	}
 
-	return &cur, nil
+	return cur, nil
 }
 
-func (c *CurrencyService) SetCurrency(ctx context.Context, name string, value string) error {
-	curValue, err := c.tool.ParseCurrencyValue(value)
-	if err != nil {
-		return err
-	}
+func (c *CurrencyService) SetCurrency(ctx context.Context, currency domain.Currency) error {
 
-	cur := domain.Currency{
-		Name:    name,
-		Value:   curValue,
-		LastUpd: time.Now(),
-	}
-
-	return c.repo.SetCurrency(ctx, cur)
-}
-
-func (c *CurrencyService) UpdateCurrency(ctx context.Context, name string, value string) error {
-	curValue, err := c.tool.ParseCurrencyValue(value)
-	if err != nil {
-		return err
-	}
-
-	cur := domain.Currency{
-		Name:    name,
-		Value:   curValue,
-		LastUpd: time.Now(),
-	}
-
-	return c.repo.UpdateCurrency(ctx, cur)
+	return c.repo.SetCurrency(ctx, currency)
 }
 
 func (c *CurrencyService) UpdateCurrencyFromAPI(ctx context.Context, name string) (domain.Currency, error) {
-	curValue, err := c.tool.GetCurrency(ctx, name)
+	curValue, err := c.tool.ParseCurrencyValue(ctx, name)
 	if err != nil {
 		return domain.Currency{}, err
 	}
 
 	cur := domain.Currency{
 		Name:    name,
-		Value:   curValue,
+		Value:   curValue.Value,
 		LastUpd: time.Now(),
 	}
 

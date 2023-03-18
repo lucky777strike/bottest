@@ -12,8 +12,9 @@ CREATE TABLE weather (
 
     PRIMARY KEY (city)
 );
+
 CREATE TABLE currency (
     name TEXT PRIMARY KEY,
-    value   value FLOAT NOT NULL,
-    last_upd  TIMESTAMP NOT NULL,
+    value FLOAT NOT NULL,
+    last_updated  TIMESTAMP NOT NULL
 );

@@ -6,6 +6,7 @@ import (
 
 func NewService(repo *domain.Repository) *domain.Service {
 	return &domain.Service{
-		Stat:    newStatisticsUsecase(repo.Stat),
-		Weather: newWeatherUsecase(repo.Weather)}
+		Stat:     newStatisticsUsecase(repo.Stat),
+		Weather:  newWeatherUsecase(repo.Weather),
+		Currency: NewCurrencyUsecase(repo.Currency)}
 }

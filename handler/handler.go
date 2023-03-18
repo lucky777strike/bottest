@@ -37,6 +37,9 @@ func (h *Handler) Start() error {
 
 	bot.HandleCmd("/weather", h.GetWeather)
 	bot.HandleState("weather", h.GetWeather)
+	bot.HandleCmd("/currency", h.GetCurrency)
+	bot.HandleState("currency", h.GetCurrency)
+
 	h.logger.Info("Starting bot...")
 	go func() {
 		bot.Start()

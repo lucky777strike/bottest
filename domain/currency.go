@@ -6,19 +6,18 @@ import (
 )
 
 type Currency struct {
-	Name    string    `json:"name"`
-	Value   float32   `json:"value"`
-	LastUpd time.Time `json:"last_updated"`
+	Name    string    `json:"name" db:"name" `
+	Value   float32   `json:"value" db:"value" `
+	LastUpd time.Time `json:"last_updated" db:"last_updated" `
 }
 
 type CurrencyRepository interface {
 	GetCurrency(ctx context.Context, name string) (Currency, error)
 	SetCurrency(ctx context.Context, c Currency) error
-	UpdateCurrency(ctx context.Context, c Currency) error
 }
 
 type CurrencyUsecase interface {
-	GetCurrency(ctx context.Context, name string) (*Currency, error)
-	SetCurrency(ctx context.Context, name, value string) error
-	UpdateCurrency(ctx context.Context, name, value string) error
+	AvailableCurrencies() []string
+	GetCurrency(ctx context.Context, name string) (Currency, error)
+	SetCurrency(ctx context.Context, currency Currency) error
 }

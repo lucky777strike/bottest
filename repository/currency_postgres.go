@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/lucky777strike/bottest/domain"
@@ -41,14 +40,5 @@ func (c *currencyPostgres) SetCurrency(ctx context.Context, currency domain.Curr
     `
 
 	_, err := c.db.ExecContext(ctx, query, currency.Name, currency.Value, currency.LastUpd)
-	return err
-}
-
-func (c *currencyPostgres) UpdateCurrency(ctx context.Context, currecy domain.Currency) error {
-	query := `
-        UPDATE currency SET value = $1, last_updated = $2 WHERE name = $3
-    `
-
-	_, err := c.db.ExecContext(ctx, query, currecy.Value, time.Now(), currecy.Name)
 	return err
 }
