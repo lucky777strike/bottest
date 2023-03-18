@@ -27,9 +27,8 @@ func main() {
 	if err != nil {
 		log.Panicln(err)
 	}
-	StatRep := repository.NewStatisticsPostgresRepository(db)
-	WeatherRepo := repository.NewWeatherPostgresRepository(db)
-	ucase := usecase.NewService(StatRep, WeatherRepo)
+	repo := repository.NewRepository(db)
+	ucase := usecase.NewService(repo)
 	ctx, cancel := context.WithCancel(context.Background())
 	token := "5990324330:AAEZdIaNzVTSQIlZJnU9zwj1QhfnPSDXr5g"
 	logger := logrus.New()
