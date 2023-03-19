@@ -52,6 +52,11 @@ docker-compose up -d
 │   └── weather_ucase.go
 ├── utils                       //Утилиты для парсинга погоды и курсов
 │   ├── currency
+│   │   ├── currenct_test.go    //Тест
+│   │   ├── currency.go
+│   │   ├── errors.go
+│   │   └── example
+│   │       └── example.go
 │   └── weather
 └── wait-for-postgres.sh        //Ожидания запуска постгреса для докера
 ```

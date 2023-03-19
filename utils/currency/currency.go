@@ -10,8 +10,12 @@ import (
 	"github.com/anaskhan96/soup"
 )
 
+type HttpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
 type CurrencyService struct {
-	client *http.Client
+	client HttpClient
 	paths  map[string]string
 }
 
@@ -25,6 +29,13 @@ func New() *CurrencyService {
 	cur["usd"] = "/usd/rub"
 	cur["eur"] = "/usd/eur"
 	client := &http.Client{}
+	return &CurrencyService{client: client, paths: cur}
+}
+
+func NewWithClient(client HttpClient) *CurrencyService {
+	cur := make(map[string]string)
+	cur["usd"] = "/usd/rub"
+	cur["eur"] = "/usd/eur"
 	return &CurrencyService{client: client, paths: cur}
 }
 
