@@ -20,7 +20,7 @@ docker-compose up -d
 ```
 
 # Описание архитектуры
-
+```
 ├── cmd                     
 │   └── main.go                  //Точка входа
 ├── configs                      //Конфиги
@@ -54,3 +54,4 @@ docker-compose up -d
 │   ├── currency
 │   └── weather
 └── wait-for-postgres.sh        //Ожидания запуска постгреса для докера
+```
