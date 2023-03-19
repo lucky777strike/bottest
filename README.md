@@ -13,7 +13,7 @@
 Ставим токен бота в docker-compose.yml
 
 Запуск осуществляется при помощи docker compose.
-Docker-compose файл включает в себя базу данных,и само приложение.
+Docker-compose файл включает в себя базу данных и само приложение.
 
 ```
 docker-compose up -d
