@@ -35,7 +35,7 @@ func (h *Handler) GetCurrency(c *tgmux.Ctx) {
 	if currentFunction == "currency" {
 		w, err := h.usecase.Currency.GetCurrency(h.ctx, c.Msg.Text)
 		if err != nil {
-			if errors.Is(err, domain.ErrCityNotFound) {
+			if errors.Is(err, domain.ErrCurrencyUnknown) {
 				message := fmt.Sprintf("Прости %s, но я не знаю валюты %s \n Попробуй еще раз", c.Msg.From.FirstName, c.Msg.Text)
 				reply := tgbotapi.NewMessage(c.Msg.Chat.ID, message)
 				reply.ReplyToMessageID = c.Msg.MessageID

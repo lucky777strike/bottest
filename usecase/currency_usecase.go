@@ -24,6 +24,9 @@ func (c *CurrencyService) GetCurrency(ctx context.Context, name string) (domain.
 		if errors.Is(err, domain.ErrNoCurrencyInBase) {
 			cur, err = c.UpdateCurrencyFromAPI(ctx, name)
 			if err != nil {
+				if errors.Is(err, currency.ErrCurNotFound) {
+					return domain.Currency{}, domain.ErrCurrencyUnknown
+				}
 				return domain.Currency{}, err
 			}
 		} else {
