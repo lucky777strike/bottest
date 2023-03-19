@@ -2,33 +2,44 @@ package main
 
 import (
 	"context"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/joho/godotenv"
 	"github.com/lucky777strike/bottest/handler"
 	"github.com/lucky777strike/bottest/repository"
 	"github.com/lucky777strike/bottest/usecase"
 	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 )
 
 func main() {
 	logger := logrus.New()
+	if err := initConfig(); err != nil {
+		log.Fatalf("error initializing configs: %s", err.Error())
+	}
+
+	//use env for sensetive data
+	if err := godotenv.Load(); err != nil {
+		logger.Info("no env file: %s", err.Error())
+	}
 	db, err := repository.NewPostgresDB(repository.Config{
-		Host:     "127.0.0.1",
-		Port:     "5432",
-		Username: "postgres",
-		DBName:   "postgres",
-		SSLMode:  "disable",
-		Password: "12345678",
+		Host:     viper.GetString("db.host"),
+		Port:     viper.GetString("db.port"),
+		Username: viper.GetString("db.username"),
+		DBName:   viper.GetString("db.dbname"),
+		SSLMode:  viper.GetString("db.sslmode"),
+		Password: os.Getenv("DB_PASSWORD"),
 	})
 	if err != nil {
-		logger.Panicln(err)
+		logger.Fatal("err to init db")
 	}
 	repo := repository.NewRepository(db)
 	ucase := usecase.NewService(repo)
 	ctx, cancel := context.WithCancel(context.Background())
-	token := "5990324330:AAEZdIaNzVTSQIlZJnU9zwj1QhfnPSDXr5g"
+	token := os.Getenv("TG_TOKEN")
 	handler := handler.NewHandler(ctx, logger, ucase, token)
 	handler.Start()
 
@@ -39,4 +50,9 @@ func main() {
 
 	logger.Info("Shutting down...")
 	cancel()
+}
+func initConfig() error {
+	viper.AddConfigPath("configs")
+	viper.SetConfigName("config")
+	return viper.ReadInConfig()
 }

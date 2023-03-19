@@ -2,7 +2,9 @@ package handler
 
 import (
 	"context"
+	"fmt"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/lucky777strike/bottest/domain"
 	"github.com/lucky777strike/tgmux"
 	"github.com/sirupsen/logrus"
@@ -45,4 +47,21 @@ func (h *Handler) Start() error {
 		bot.Start()
 	}()
 	return nil
+}
+
+func (h *Handler) startCommand(c *tgmux.Ctx) {
+	h.usecase.Stat.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
+	welcomeMessage := fmt.Sprintf(`Привет, %s! Доступные команды:
+	/weather -- прогноз погоды
+	/currency -- курсы валют
+	/stat -- статистика запросов
+	/reset -- сброс статистики`, c.Msg.From.FirstName)
+
+	reply := tgbotapi.NewMessage(c.Msg.Chat.ID, welcomeMessage)
+	reply.ReplyToMessageID = c.Msg.MessageID
+
+	_, err := c.Bot.Send(reply)
+	if err != nil {
+		h.logger.Errorf("Error sending message: %v\n", err)
+	}
 }

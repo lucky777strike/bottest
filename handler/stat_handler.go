@@ -7,22 +7,6 @@ import (
 	"github.com/lucky777strike/tgmux"
 )
 
-func (h *Handler) startCommand(c *tgmux.Ctx) {
-	h.usecase.Stat.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
-	welcomeMessage := fmt.Sprintf(`Привет, %s! Доступные команды:
-	/weather -- прогноз погоды
-	/stat -- статистика запросов
-	/reset -- сброс статистики`, c.Msg.From.FirstName)
-
-	reply := tgbotapi.NewMessage(c.Msg.Chat.ID, welcomeMessage)
-	reply.ReplyToMessageID = c.Msg.MessageID
-
-	_, err := c.Bot.Send(reply)
-	if err != nil {
-		h.logger.Errorf("Error sending message: %v\n", err)
-	}
-}
-
 func (h *Handler) stat(c *tgmux.Ctx) {
 	h.usecase.Stat.IncrementUserStatistics(h.ctx, c.Msg.From.ID)
 	stat, err := h.usecase.Stat.GetUserStatistics(h.ctx, c.Msg.From.ID)
